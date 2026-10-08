@@ -1103,110 +1103,80 @@ checkout to a payment gateway.
 `;
 
 }
-
-
 /* ==============================
-   PLACE ORDER
+   PLACE ORDER WITH DIRECT EMAIL NOTIFICATION
 ============================== */
 
 function placeOrder(){
 
-if(cart.length===0){
+  if(cart.length===0){
+    alert("Your cart is empty.");
+    return;
+  }
 
-alert("Your cart is empty.");
+  let name = document.getElementById("customerName").value.trim();
+  let mobile = document.getElementById("customerMobile").value.trim();
+  let address = document.getElementById("customerAddress").value.trim();
+  let method = document.getElementById("paymentMethod").value;
 
-return;
+  if(!name || !mobile || !address){
+    alert("Please fill all customer details.");
+    return;
+  }
 
-}
+  let total = cart.reduce((sum,item)=>sum+item.price,0);
+  let orderId = "KW-" + Date.now();
 
-let name =
-document.getElementById("customerName").value.trim();
+  let order = {
+    id: orderId,
+    customer: { name: name, mobile: mobile, address: address },
+    items: [...cart],
+    total: total,
+    payment: method,
+    status: "Pending",
+    date: new Date().toLocaleString()
+  };
 
-let mobile =
-document.getElementById("customerMobile").value.trim();
+  // LocalStorage me save karein (Admin Panel ke liye)
+  orders.push(order);
+  localStorage.setItem("krishOrders", JSON.stringify(orders));
 
-let address =
-document.getElementById("customerAddress").value.trim();
+  // Ordered Products ki list
+  let itemDetails = cart.map((item, i) => `${i+1}. ${item.name} (Rs. ${item.price})`).join(", ");
 
-let method =
-document.getElementById("paymentMethod").value;
+  // Direct Email Notification Bhejna (krisraj0007@gamil.com)
+  fetch("https://formsubmit.co/ajax/your-krisraj0007@gmail.com", {
+    method: "POST",
+    headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      _subject: "🛍️ NEW ORDER RECEIVED - KRISH WEAR (" + orderId + ")",
+      "Order ID": orderId,
+      "Customer Name": name,
+      "Mobile Number": mobile,
+      "Address": address,
+      "Payment Method": method,
+      "Items Ordered": itemDetails,
+      "Total Amount": "Rs. " + total,
+      "Date": order.date
+    })
+  })
+  .then(response => response.json())
+  .then(data => console.log("Email Sent!", data))
+  .catch(error => console.log("Error sending email:", error));
 
+  cart = [];
+  saveCart();
 
-if(!name || !mobile || !address){
-
-alert("Please fill all customer details.");
-
-return;
-
-}
-
-
-/*
- UPI protection:
-
-Order CANNOT be placed until
-a real backend/payment gateway
-sets upiVerified=true.
-*/
-
-if(method==="UPI" && !upiVerified){
-
-alert(
-"UPI payment must be successfully verified before placing the order."
-);
-
-return;
-
-}
-
-
-let total =
-cart.reduce((sum,item)=>sum+item.price,0);
-
-
-let order={
-
-id:"KW-"+Date.now(),
-
-customer:{
-name:name,
-mobile:mobile,
-address:address
-},
-
-items:[...cart],
-
-total:total,
-
-payment:method,
-
-status:"Pending",
-
-date:new Date().toLocaleString()
-
-};
-
-
-orders.push(order);
-
-localStorage.setItem(
-"krishOrders",
-JSON.stringify(orders)
-);
-
-
-cart=[];
-
-saveCart();
-
-
-alert(
-"Order placed successfully!\nOrder ID: "+order.id
-);
-
-openPage("home");
+  // Customer ko website par hi message dikhana
+  alert("🎉 Order Placed Successfully!\nOrder ID: " + orderId);
+  openPage("home");
 
 }
+
+
 
 
 /* ==============================
