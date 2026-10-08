@@ -1103,6 +1103,7 @@ checkout to a payment gateway.
 `;
 
 }
+
 /* ==============================
    PLACE ORDER WITH DIRECT EMAIL NOTIFICATION
 ============================== */
@@ -1137,22 +1138,21 @@ function placeOrder(){
     date: new Date().toLocaleString()
   };
 
-  // LocalStorage me save karein (Admin Panel ke liye)
   orders.push(order);
   localStorage.setItem("krishOrders", JSON.stringify(orders));
 
-  // Ordered Products ki list
   let itemDetails = cart.map((item, i) => `${i+1}. ${item.name} (Rs. ${item.price})`).join(", ");
 
-  // Direct Email Notification Bhejna (krisraj0007@gamil.com)
-  fetch("https://formsubmit.co/ajax/your-krisraj0007@gmail.com", {
+  // Direct Web3Forms Notification
+  fetch("https://api.web3forms.com/submit", {
     method: "POST",
     headers: { 
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     },
     body: JSON.stringify({
-      _subject: "🛍️ NEW ORDER RECEIVED - KRISH WEAR (" + orderId + ")",
+      access_key: "cccbbebc-7857-4d27-86e9-8d85d13cc478",
+      subject: "🛍️ NEW ORDER RECEIVED - KRISH WEAR (" + orderId + ")",
       "Order ID": orderId,
       "Customer Name": name,
       "Mobile Number": mobile,
@@ -1170,7 +1170,6 @@ function placeOrder(){
   cart = [];
   saveCart();
 
-  // Customer ko website par hi message dikhana
   alert("🎉 Order Placed Successfully!\nOrder ID: " + orderId);
   openPage("home");
 
