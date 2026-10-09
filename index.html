@@ -1605,3 +1605,70 @@ showHomeProducts();
     <p>© 2026 Kris Wear | <a href="privacy.html">Privacy Policy</a></p>
 </footer>
 
+<!-- Complaint & Return Form Section -->
+<section style="max-width: 500px; margin: 30px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; font-family: Arial, sans-serif; background-color: #f9f9f9;">
+  <h2 style="text-align: center; color: #333;">Complaint & Return Request</h2>
+  <form id="complaintForm">
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Full Name:</label>
+      <input type="text" id="custName" placeholder="Apna naam likhein" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Mobile Number / WhatsApp:</label>
+      <input type="tel" id="custPhone" placeholder="Mobile number" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Order ID:</label>
+      <input type="text" id="orderId" placeholder="Order ID daalein" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Issue Type:</label>
+      <select id="issueType" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;">
+        <option value="Return Request">Return / Replacement Request</option>
+        <option value="Wrong Item Received">Galat item mila hai</option>
+        <option value="Size Issue">Size fit nahi aa raha</option>
+        <option value="Damaged Product">Product kharab/damaged hai</option>
+        <option value="Other Complaint">Koyi aur dikkat hai</option>
+      </select>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: bold;">Details / Message:</label>
+      <textarea id="issueDetail" rows="4" placeholder="Apni dikkat yahan likhein..." required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;"></textarea>
+    </div>
+
+    <button type="button" onclick="sendComplaintWhatsApp()" style="width: 100%; background-color: #25D366; color: white; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer;">
+      Submit Request via WhatsApp 💬
+    </button>
+  </form>
+</section><script>
+function sendComplaintWhatsApp() {
+  // Yahan apna WhatsApp number 91 ke sath daalein
+  let myPhoneNumber = "91XXXXXXXXXX"; // <-- Apne WhatsApp number se replace karein (e.g. 919876543210)
+
+  let name = document.getElementById("custName").value;
+  let phone = document.getElementById("custPhone").value;
+  let orderId = document.getElementById("orderId").value;
+  let issueType = document.getElementById("issueType").value;
+  let issueDetail = document.getElementById("issueDetail").value;
+
+  if (name === "" || phone === "" || orderId === "" || issueDetail === "") {
+    alert("Kripya saari details dhang se bharein!");
+    return;
+  }
+
+  let message = `*NEW COMPLAINT / RETURN REQUEST*%0A%0A` +
+                `*Name:* ${name}%0A` +
+                `*Phone:* ${phone}%0A` +
+                `*Order ID:* ${orderId}%0A` +
+                `*Type:* ${issueType}%0A` +
+                `*Details:* ${issueDetail}`;
+
+  let whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${message}`;
+  window.open(whatsappUrl, '_blank');
+}
+</script>
+
